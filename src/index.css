@@ -1,0 +1,8 @@
+@import "tailwindcss";
+
+/* Estilos globales para etiquetas flotantes */
+.floating-input:focus ~ .floating-label,
+.floating-input:not(:placeholder-shown) ~ .floating-label {
+  transform: translateY(-1.5rem) scale(0.75);
+  color: #2563eb; /* blue-600 */
+}
