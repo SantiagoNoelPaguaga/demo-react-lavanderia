@@ -1,23 +1,62 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Lock, ChevronRight } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
 import Button from '../../components/ui/Button';
 
 export default function EditarPerfil() {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
-  const [nombre, setNombre] = useState('Ricardo');
-  const [apellido, setApellido] = useState('Darín');
-  const [telefono, setTelefono] = useState('+54 9 351 1234567');
-  const [email, setEmail] = useState('ricardodarin@gmail.com');
-  const dni = '30123456'; // Read-only
+  if (!user) return null;
+
+  const isClient = user.rol === 'cliente';
+  const isOperator = user.rol === 'operador';
+
+  // Configuración inicial de campos por rol
+  const getInitialFields = () => {
+    if (isClient) {
+      return {
+        nombre: 'Ricardo',
+        apellido: 'Darín',
+        dni: '30123456',
+        telefono: '+54 9 351 1234567',
+        email: 'ricardodarin@gmail.com',
+      };
+    } else if (isOperator) {
+      return {
+        nombre: 'Ramiro',
+        apellido: 'P.',
+        dni: '20123987',
+        telefono: '+54 9 351 1239876',
+        email: 'ramiro.op@lavapro.com',
+      };
+    } else {
+      // Admin
+      return {
+        nombre: 'Santiago',
+        apellido: '',
+        dni: '20987654',
+        telefono: '+54 9 351 9876543',
+        email: 'santiago.admin@lavapro.com',
+      };
+    }
+  };
+
+  const initial = getInitialFields();
+
+  const [nombre, setNombre] = useState(initial.nombre);
+  const [apellido, setApellido] = useState(initial.apellido);
+  const [telefono, setTelefono] = useState(initial.telefono);
+  const [email, setEmail] = useState(initial.email);
+  const dni = initial.dni; // Read-only
 
   const handleSubmit = (e) => {
     e.preventDefault();
     alert(
       'API: Ejecuta servicio update() -> PUT /usuarios/{id} \nEnvía el esquema UsuarioUpdate.'
     );
-    navigate('/cliente/perfil');
+    navigate('/perfil');
   };
 
   return (
@@ -31,7 +70,7 @@ export default function EditarPerfil() {
           <h2 className="text-md font-bold text-gray-800">Configuración</h2>
         </div>
         <button
-          onClick={() => navigate('/cliente/perfil')}
+          onClick={() => navigate('/perfil')}
           className="p-1.5 hover:bg-gray-100 rounded-lg text-gray-400 transition-colors cursor-pointer"
           aria-label="Volver al perfil"
         >
@@ -75,7 +114,7 @@ export default function EditarPerfil() {
             id="apellido"
             value={apellido}
             onChange={(e) => setApellido(e.target.value)}
-            required
+            required={!isOperator && user.rol !== 'administrador'} // Opcional para admin sin apellido cargado
             className="block w-full bg-gray-50 border border-gray-200 text-gray-800 text-xs font-semibold rounded-xl p-3 focus:outline-none focus:border-blue-500 focus:bg-white transition-all"
           />
         </div>
@@ -141,7 +180,7 @@ export default function EditarPerfil() {
           <button
             type="button"
             className="w-full bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200 py-3 px-4 rounded-xl text-xs font-bold transition-all active:scale-[0.99] flex items-center justify-between cursor-pointer"
-            onClick={() => navigate('/cliente/perfil/password')}
+            onClick={() => navigate('/perfil/password')}
           >
             <div className="flex items-center gap-2 text-gray-600">
               <Lock size={14} strokeWidth={2.5} />
@@ -152,7 +191,7 @@ export default function EditarPerfil() {
         </div>
 
         {/* Guardar */}
-        <div className="pt-2 space-y-2">
+        <div className="pt-2 space-y-2 shrink-0">
           <Button type="submit" variant="primary">
             Guardar Cambios
           </Button>
@@ -164,7 +203,7 @@ export default function EditarPerfil() {
         <button
           type="button"
           className="text-xs font-bold text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
-          onClick={() => navigate('/cliente/perfil')}
+          onClick={() => navigate('/perfil')}
         >
           Descartar cambios y volver
         </button>

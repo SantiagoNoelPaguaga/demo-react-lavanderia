@@ -1,32 +1,34 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import FloatingLabelInput from '../../components/ui/FloatingLabelInput';
 import Button from '../../components/ui/Button';
 
 export default function Login() {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert('Flujo de la API: POST /auth/login \nRetorna JWT y Rol del Usuario. Redirigiendo a panel de Cliente...');
-    navigate('/cliente/dashboard');
+    login('Ricardo Darín', 'cliente');
+    navigate('/dashboard');
   };
 
   const handleRoleSimulation = (role) => {
     if (role === 'cliente') {
-      navigate('/cliente/dashboard');
+      login('Ricardo Darín', 'cliente');
+      navigate('/dashboard');
     } else if (role === 'operador') {
-      alert(
-        "Simulación API - Rol: Operador\n\nResponse:\n{\n  'access_token': '...',\n  'usuario': {\n    'rol': 'Operador',\n    'nombre': 'Juan'\n  }\n}\n\n👉 UX Front: Redirige a /panel-operador"
-      );
+      login('Ramiro P.', 'operador');
+      navigate('/dashboard');
     } else if (role === 'admin') {
-      alert(
-        "Simulación API - Rol: Administrador\n\nResponse:\n{\n  'access_token': '...',\n  'usuario': {\n    'rol': 'Administrador',\n    'nombre': 'Santiago'\n  }\n}\n\n👉 UX Front: Redirige a /dashboard-admin"
-      );
+      login('Santiago', 'administrador');
+      navigate('/dashboard');
     }
   };
+
 
   return (
     <div className="flex-1 flex flex-col justify-between h-full min-h-[500px]">

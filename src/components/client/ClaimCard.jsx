@@ -1,20 +1,26 @@
 import { useNavigate } from 'react-router-dom';
-import StatusBadge from '../ui/StatusBadge';
 import { MessageSquare } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
+import StatusBadge from '../ui/StatusBadge';
 
 export default function ClaimCard({ claim }) {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const handleAction = () => {
-    if (claim.status.toLowerCase() === 'resuelto') {
-      alert(`Navegación: Ver historial de chat cerrado del Reclamo #${claim.id}`);
-    } else {
-      navigate(`/cliente/reclamos/${claim.id}`);
-    }
+    navigate(`/reclamos/${claim.id}`);
   };
 
+  const isClient = user?.rol === 'cliente';
+  const isAdmin = user?.rol === 'administrador';
+  const isResuelto = claim.status.toLowerCase() === 'resuelto';
+
+  const hoverColorClass = isAdmin 
+    ? 'hover:border-purple-300' 
+    : 'hover:border-blue-300';
+
   return (
-    <div className={`bg-white border border-gray-200 rounded-xl p-4 shadow-sm space-y-3 transition-all hover:border-blue-300 ${claim.status.toLowerCase() === 'resuelto' ? 'opacity-85 hover:opacity-100' : ''}`}>
+    <div className={`bg-white border border-gray-200 rounded-xl p-4 shadow-sm space-y-3 transition-all ${hoverColorClass} ${isResuelto ? 'opacity-70 hover:opacity-100' : ''}`}>
       <div className="flex justify-between items-start">
         <div>
           <span className="text-[10px] bg-amber-50 text-amber-700 border border-amber-100 px-2 py-0.5 rounded-md font-bold uppercase tracking-wide">
@@ -23,6 +29,11 @@ export default function ClaimCard({ claim }) {
           <h4 className="font-black text-gray-800 text-sm mt-1.5">
             Pedido Asociado: #{claim.pedidoId}
           </h4>
+          {!isClient && claim.cliente && (
+            <p className="text-[11px] font-bold text-gray-500 mt-0.5">
+              Cliente: {claim.cliente}
+            </p>
+          )}
         </div>
         <StatusBadge status={claim.status} />
       </div>
@@ -34,15 +45,17 @@ export default function ClaimCard({ claim }) {
           </p>
           <p className="font-bold text-gray-700">{claim.categoria}</p>
           <p className="text-[10px] text-gray-400 font-medium mt-0.5">
-            Creado: {claim.fecha}
+            {isResuelto ? 'Cerrado: ' : 'Creado: '} {claim.fecha}
           </p>
         </div>
         <button
           onClick={handleAction}
           className={`p-2 bg-white border border-gray-200 rounded-lg shadow-sm transition-all active:scale-95 cursor-pointer ${
-            claim.status.toLowerCase() === 'resuelto'
-              ? 'text-gray-500 hover:text-gray-700'
-              : 'text-blue-600 hover:text-blue-800'
+            isResuelto
+              ? 'text-gray-400 hover:text-gray-600'
+              : isAdmin 
+                ? 'text-purple-600 hover:text-purple-800' 
+                : 'text-blue-600 hover:text-blue-800'
           }`}
           aria-label={`Ver mensajes del Reclamo #${claim.id}`}
         >

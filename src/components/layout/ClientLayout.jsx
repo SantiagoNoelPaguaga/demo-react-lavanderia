@@ -1,39 +1,34 @@
 import { Outlet, useLocation } from 'react-router-dom';
 import MobileContainer from './MobileContainer';
-import ClientHeader from './ClientHeader';
+import AppHeader from './AppHeader';
 import BottomNavbar from './BottomNavbar';
 
 export default function ClientLayout() {
   const location = useLocation();
 
-  // Determinamos si es una página de chat (ej: /cliente/reclamos/012)
-  const isChatPage = location.pathname.match(/\/cliente\/reclamos\/\w+/) && 
+  // Determinamos si es una página de chat (ej: /reclamos/012)
+  const isChatPage = location.pathname.match(/\/reclamos\/\w+/) && 
                      !location.pathname.endsWith('/nuevo') && 
-                     location.pathname !== '/cliente/reclamos';
+                     location.pathname !== '/reclamos';
                      
-  const isNewClaimPage = location.pathname === '/cliente/reclamos/nuevo';
-  const isEditProfilePage = location.pathname === '/cliente/perfil/editar' || location.pathname === '/cliente/perfil/password';
+  const isNewClaimPage = location.pathname === '/reclamos/nuevo';
+  const isEditProfilePage = location.pathname === '/perfil/editar' || location.pathname === '/perfil/password';
+  const isEditOrderPage = location.pathname.match(/\/pedidos\/\w+\/editar/);
   
   // Páginas que usan su propia cabecera personalizada
-  const hideDefaultHeader = isChatPage || isNewClaimPage || isEditProfilePage;
+  const hideDefaultHeader = isChatPage || isNewClaimPage || isEditProfilePage || isEditOrderPage;
   
   // Páginas que ocultan el BottomNavbar por diseño original
   const hideNavbar = isChatPage || isEditProfilePage;
 
-  // Título de la cabecera según la ruta
-  let headerTitle = "Ricardo Darín";
-  if (location.pathname.startsWith('/cliente/perfil')) {
-    headerTitle = "Mi Cuenta";
-  }
-
   return (
     <MobileContainer 
-      padding={isChatPage ? "p-0" : "p-6"} 
-      className={isChatPage ? "overflow-hidden" : ""}
+      padding={(isChatPage || isEditOrderPage) ? "p-0" : "p-6"} 
+      className={(isChatPage || isEditOrderPage) ? "overflow-hidden" : ""}
     >
       <div className="flex-1 flex flex-col justify-between h-full relative">
-        {/* Cabecera */}
-        {!hideDefaultHeader && <ClientHeader title={headerTitle} />}
+        {/* Cabecera adaptativa */}
+        {!hideDefaultHeader && <AppHeader />}
 
         {/* Contenido dinámico */}
         <div className="flex-1 flex flex-col min-h-0 overflow-hidden">

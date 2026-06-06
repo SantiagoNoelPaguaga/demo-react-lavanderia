@@ -30,7 +30,7 @@ export default function ReclamoNuevo() {
     alert(
       'API Pipeline: \n1. POST /reclamos \n2. Captura ID generado \n3. POST /reclamos/mensajes con el texto \n4. Redirige a la vista del Chat.'
     );
-    navigate('/cliente/reclamos');
+    navigate('/reclamos');
   };
 
   return (
@@ -39,7 +39,7 @@ export default function ReclamoNuevo() {
       <div className="flex items-center gap-2 text-gray-800 shrink-0">
         <button
           type="button"
-          onClick={() => navigate('/cliente/reclamos')}
+          onClick={() => navigate('/reclamos')}
           className="p-1 hover:bg-gray-100 rounded-lg text-gray-400 transition-colors cursor-pointer"
           aria-label="Volver a la lista de reclamos"
         >
@@ -105,7 +105,7 @@ export default function ReclamoNuevo() {
 
           <Button
             type="button"
-            onClick={() => navigate('/cliente/reclamos')}
+            onClick={() => navigate('/reclamos')}
             variant="secondary"
           >
             Cancelar

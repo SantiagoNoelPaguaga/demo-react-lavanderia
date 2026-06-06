@@ -23,7 +23,7 @@ export default function CambiarPassword() {
     alert(
       'API: Ejecuta flujo de validación. \nCompara hash actual con bcrypt y actualiza campo password en la base de datos.'
     );
-    navigate('/cliente/perfil/editar');
+    navigate('/perfil/editar');
   };
 
   return (
@@ -37,7 +37,7 @@ export default function CambiarPassword() {
           <h2 className="text-md font-bold text-gray-800">Seguridad</h2>
         </div>
         <button
-          onClick={() => navigate('/cliente/perfil/editar')}
+          onClick={() => navigate('/perfil/editar')}
           className="p-1.5 hover:bg-gray-100 rounded-lg text-gray-400 transition-colors cursor-pointer"
           aria-label="Volver a configuración"
         >
@@ -152,7 +152,7 @@ export default function CambiarPassword() {
         <button
           type="button"
           className="text-xs font-bold text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
-          onClick={() => navigate('/cliente/perfil/editar')}
+          onClick={() => navigate('/perfil/editar')}
         >
           Cancelar y volver
         </button>
